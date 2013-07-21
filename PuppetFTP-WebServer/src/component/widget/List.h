@@ -3,6 +3,7 @@
 
 #include "AbstractWidget.h"
 #include "Container.h"
+#include "Link.h"
 
 namespace UI {
 
@@ -21,6 +22,7 @@ public:
 
     void              setNodeMode(const MODE& mode);
     void              addWidget(Container* widget);
+    void              addWidget(Link* widget);
     MODE              getNodeMode() const;
     QList<Container*> getWidget()   const;
     QString           render()      const;

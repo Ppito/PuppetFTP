@@ -24,9 +24,11 @@ DefaultPageRenderer::DefaultPageRenderer(const bool disabled) :
     addStylesheet("/css/style.css");
     addStylesheet("/css/shadowbox.css");
     addStylesheet("http://fonts.googleapis.com/css?family=Muli:300");
-    addStylesheet("/css/jquery.ambiance.css");
+    addStylesheet("/css/bootstrap-notify.css");
+    addStylesheet("/css/alert-notification-animations.css");
     addJavascript("/js/jquery.min.js");
-    addJavascript("/js/jquery.ambiance.js");
+    addJavascript("/js/bootstrap.min.js");
+    addJavascript("/js/bootstrap-notify.js");
     addJavascript("/js/shadowbox.js");
     addJavascript("/js/puppetftp.js");
 
@@ -72,6 +74,13 @@ DefaultPageRenderer::DefaultPageRenderer(const bool disabled) :
         hidden->addWidget(new Text("&nbsp;"));
         header()->addWidget(hidden);
     }
+
+    //Body
+    Container* notify = new Container();
+    {
+        notify->addClass("notifications top-right");
+    }
+    body()->addWidget(notify);
 
     // Footer
     Container* foot = new Container(Container::PARAGRAPH);

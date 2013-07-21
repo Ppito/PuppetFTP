@@ -61,7 +61,7 @@ bool RequestDispatcher::configure() {
     RequestProcessorFactory::instance()->registerProcessor<ServerManageProcessor>("serverManage");
     RequestProcessorFactory::instance()->registerProcessor<ServerListProcessor>("serverList");
     RequestProcessorFactory::instance()->registerProcessor<ServerServiceProcessor>("serverService");
-    RequestProcessorFactory::instance()->registerProcessor<UnavailableProcessor>("serverUserList");
+    RequestProcessorFactory::instance()->registerProcessor<ServerUserListProcessor>("serverUserList");
     return true;
 }
 

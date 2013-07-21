@@ -40,7 +40,7 @@ QByteArray ServerListProcessor::render() const {
     QMap<QString, QVariant> param;
 
     page.body()->addWidget(_notify);
-    Translate::instance()->group("server_manage");
+    Translate::instance()->group("server");
 
     // Content
     UI::Container* divBreadcrumb = new UI::Container();
@@ -77,25 +77,6 @@ QByteArray ServerListProcessor::render() const {
     UI::Container* divContent = new UI::Container();
     {
         divContent->setId("server");
-
-//        // Icon
-//        UI::Container* divIcon = new UI::Container();
-//        {
-//            divIcon->addClass("icon users");
-//            UI::Image* imgContent = new UI::Image("/img/icon_ftp.png", Translate::instance()->tr("icon"));
-//            imgContent->setAttribute("width", "60");
-//            divIcon->addWidget(imgContent);
-//        }
-//        divContent->addWidget(divIcon);
-
-//        // Menu
-//        UI::Menu* menu = new UI::Menu(UI::Container::NAV);
-//        {
-//            menu->setAttribute("id", "menu");
-//            menu->addMenu("menu", new UI::Link(Helper::gen_url("serverUserList", param), new UI::Text(Translate::instance()->tr("menu_user"))));
-//            menu->addMenu("menu", new UI::Link(Helper::gen_url("serverList", param), new UI::Text(Translate::instance()->tr("menu_server"))));
-//        }
-//        divContent->addWidget(menu);
 
         // Editing
         divContent->addWidget(_table->getContent());

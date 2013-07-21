@@ -53,7 +53,6 @@ void ServerConfEditor::initCustomField() {
 
     // Set attribute
     getContent()->removeAttribute("class");
-    getContent()->addClass("rightCol");
 }
 
 void ServerConfEditor::initOrder() {

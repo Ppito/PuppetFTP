@@ -141,6 +141,7 @@ QByteArray ServerManageProcessor::render() const {
     {
         divContent->setId("server");
 
+        Translate::instance()->group("server");
         // Icon
         UI::Container* divIcon = new UI::Container();
         {
@@ -151,6 +152,7 @@ QByteArray ServerManageProcessor::render() const {
         }
         divContent->addWidget(divIcon);
 
+        Translate::instance()->group("server_manage");
         // Menu
         UI::Menu* menu = new UI::Menu(UI::Container::NAV);
         {
@@ -160,8 +162,66 @@ QByteArray ServerManageProcessor::render() const {
         }
         divContent->addWidget(menu);
 
-        // Editing
-        divContent->addWidget(_form->getContent());
+        UI::Container* rightCol = new UI::Container(UI::Container::DIV);
+        {
+            rightCol->addClass("rightCol");
+            UI::Container* tabbable = new UI::Container(UI::Container::DIV);
+            {
+                tabbable->addClass("tabbable");
+                // Tab
+                UI::List* tab = new UI::List();
+                {
+                    tab->addClass("nav nav-tabs");
+                    UI::Link* gen = new UI::Link("#general", new UI::Text("General"));
+                    gen->setAttribute("data-toggle", "tab");
+                    tab->addWidget(gen);
+
+                    UI::Link* anon = new UI::Link("#anonymous", new UI::Text("Anonymous"));
+                    anon->setAttribute("data-toggle", "tab");
+                    tab->addWidget(anon);
+
+//                    UI::Link* extra = new UI::Link("#extra", new UI::Text("Extra"));
+//                    extra->setAttribute("data-toggle", "tab");
+//                    tab->addWidget(extra);
+                }
+                tabbable->addWidget(tab);
+
+                UI::Container* contentTab = new UI::Container(UI::Container::DIV);
+                {
+                    contentTab->addClass("tab-content");
+
+                    // Editing General
+                    UI::Container* generalTab = new UI::Container(UI::Container::DIV);
+                    {
+                        generalTab->setId("general");
+                        generalTab->addClass("tab-pane active");
+                        generalTab->addWidget(_form->getContent());
+                    }
+                    contentTab->addWidget(generalTab);
+
+                    // Editing Anonymous
+                    UI::Container* anonTab = new UI::Container(UI::Container::DIV);
+                    {
+                        anonTab->setId("anonymous");
+                        anonTab->addClass("tab-pane");
+//                        anonTab->addWidget(_form->getContent());
+                    }
+                    contentTab->addWidget(anonTab);
+
+                    // Editing Extra
+//                    UI::Container* extraTab = new UI::Container(UI::Container::DIV);
+//                    {
+//                        extraTab->setId("extra");
+//                        extraTab->addClass("tab-pane");
+//                        extraTab->addWidget(_form->getContent());
+//                    }
+//                    contentTab->addWidget(extraTab);
+                }
+                tabbable->addWidget(contentTab);
+            }
+            rightCol->addWidget(tabbable);
+        }
+        divContent->addWidget(rightCol);
 
         // Clear
         UI::Container* divClear = new UI::Container();

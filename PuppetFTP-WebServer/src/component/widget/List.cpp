@@ -31,6 +31,12 @@ void              List::addWidget(Container* widget)  {
     _widget.push_back(widget);
 }
 
+void              List::addWidget(Link* widget) {
+    Container* div = new Container(Container::NONE);
+    div->addWidget(widget);
+    addWidget(div);
+}
+
 void              List::setNodeMode(const List::MODE& mode) { _mode = mode;   }
 List::MODE        List::getNodeMode()                 const { return _mode;   }
 QList<Container*> List::getWidget()                   const { return _widget; }
