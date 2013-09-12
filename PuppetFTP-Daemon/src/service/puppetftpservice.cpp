@@ -17,7 +17,6 @@ PuppetFtpService::~PuppetFtpService()
 
 void PuppetFtpService::start()
 {
-    QCoreApplication * app = application();
     ServerConfig     * config = ServerConfig::getInstance();
 
     config->load();
@@ -50,8 +49,6 @@ void PuppetFtpService::start()
         stop();
         return;
     }
-
-    app->exec();
 }
 
 void PuppetFtpService::stop()

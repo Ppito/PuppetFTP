@@ -30,7 +30,6 @@ LIBS *= -lCommunication
 LIBS *= -lUtils
 LIBS *= -lPluginSystem
 LIBS *= -lMetaBridge
-LIBS *= -lServerconfig
 LIBS *= -lomnithread
 LIBS *= -lomniORB4
 

@@ -93,7 +93,7 @@ QString VsftpdParser::fileName() const
 void VsftpdParser::setFileName(const QString & filename)
 {
     m_filename = filename;
-    sync();
+    refresh();
 }
 
 bool VsftpdParser::isDryRun() const
