@@ -2,7 +2,7 @@
 
 Vsftpd::Vsftpd()
 {
-    setName(QLatin1String("Proftpd"));
+    setName(QLatin1String("Vsftpd"));
     setType(QLatin1String("MetaPlugin"));
     setGroup(QLatin1String("FTP"));
     initialize(*(ServerConfig::getInstance()));
@@ -24,6 +24,5 @@ MetaConfig * Vsftpd::getMetaConfigInstance()
 {
     return new VsftpdConfigHandler(m_serverName, m_serverAddr, m_configFile, m_binPath);
 }
-
 
 EXPORT_PLUGIN(Vsftpd)

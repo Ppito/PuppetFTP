@@ -11,6 +11,7 @@ class Proftpd : public MetaPlugin
 
 public:
     Proftpd();
+    ~Proftpd();
 
     // Plugin default config loading from file deprecated soon !
     void initialize(ServerConfig & config);

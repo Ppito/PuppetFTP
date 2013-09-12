@@ -11,12 +11,14 @@
 
 class Vsftpd : public MetaPlugin
 {
+    Q_OBJECT
+
 public:
     Vsftpd();
     ~Vsftpd();
 
     // Plugin default config loading from file deprecated soon !
-    Q_INVOKABLE void initialize(ServerConfig & config);
+    void initialize(ServerConfig & config);
 
     MetaConfig * getMetaConfigInstance();
 
@@ -25,6 +27,7 @@ private:
     QString         m_configFile;
     QString         m_binPath;
     QString         m_serverName;
-    QString         m_serverAddr;};
+    QString         m_serverAddr;
+};
 
 #endif // VSFTPD_H

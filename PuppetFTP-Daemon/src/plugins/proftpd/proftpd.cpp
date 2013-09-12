@@ -3,8 +3,13 @@
 Proftpd::Proftpd()
 {
     setName(QLatin1String("Proftpd"));
+    setType(QLatin1String("MetaPlugin"));
     setGroup(QLatin1String("FTP"));
     initialize(*(ServerConfig::getInstance()));
+}
+
+Proftpd::~Proftpd()
+{
 }
 
 void Proftpd::initialize(ServerConfig & config)
@@ -17,7 +22,6 @@ void Proftpd::initialize(ServerConfig & config)
 
 MetaConfig * Proftpd::getMetaConfigInstance()
 {
-//    return new MetaConfig();
     return new ProFtpdConfigHandler(m_serverName, m_serverAddr, m_configFile, m_binPath);
 }
 
