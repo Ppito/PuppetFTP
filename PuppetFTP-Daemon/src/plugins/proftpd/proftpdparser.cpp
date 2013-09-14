@@ -313,6 +313,7 @@ QString ProftpdParser::fileName() const
 void ProftpdParser::setFileName(const QString & filename)
 {
     m_filename = filename;
+    refresh();
 }
 
 bool ProftpdParser::isDryRun() const

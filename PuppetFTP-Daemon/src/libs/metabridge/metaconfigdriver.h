@@ -11,10 +11,11 @@
 #include "lasterror.h"
 #include "IServerConfigurationProvider.h"
 
-class MetaConfigDriver : public LastError, public IServerConfigurationProvider
-{
+class MetaConfigDriver :  public LastError, public IServerConfigurationProvider {
+
 public:
     MetaConfigDriver();
+    ~MetaConfigDriver();
 
     bool loadPlugin(const QString & pluginId, const QString & pluginName);
     bool unloadPlugin(const QString & pluginId);

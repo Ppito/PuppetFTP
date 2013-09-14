@@ -1,4 +1,5 @@
 #include <QLibrary>
+#include <QCoreApplication>
 
 #include "pluginmanager.h"
 
@@ -68,9 +69,9 @@ void PluginManager::setLastError(const QString & errorString)
 QString PluginManager::pluginFileName(const QString & pluginName)
 {
 #ifdef Q_OS_WIN
-    return QString(QLatin1String(".\\plugins\\%1")).arg(pluginName.toLower());
+    return QString(QLatin1String("\\plugins\\%1")).arg(pluginName.toLower());
 #else
-    return QString(QLatin1String("./plugins/lib%1")).arg(pluginName.toLower());
+    return QString(QLatin1String("/plugins/lib%1")).arg(pluginName.toLower());
 #endif // Q_OS_WIN
 }
 
@@ -87,7 +88,7 @@ typedef Plugin* (* Instance)();
 QSharedPointer < Plugin > PluginManager::loadPlugin(const QString & pluginName)
 {
     if (!pluginName.isEmpty()) {
-        QLibrary lib(pluginFileName(pluginName));
+        QLibrary lib(QCoreApplication::applicationDirPath() + pluginFileName(pluginName));
         Instance symbole = (Instance)lib.resolve("instance");
         if (symbole) {
             Plugin * plugin = symbole();

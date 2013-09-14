@@ -7,9 +7,12 @@
     It's provide a way to load metaPlugins and retrieve MetaConfig instance and then to drive them
  */
 
-MetaConfigDriver::MetaConfigDriver()
-{
+MetaConfigDriver::MetaConfigDriver() {
     setLastErrorString("HUSS");
+}
+
+MetaConfigDriver::~MetaConfigDriver() {
+
 }
 
 /*!
