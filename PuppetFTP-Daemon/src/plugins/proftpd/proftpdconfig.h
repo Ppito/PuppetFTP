@@ -18,6 +18,10 @@ public:
     QString getServerName() const;
     void    setServerName(const QString & name);
 
+    Q_PROPERTY(QString serverNameProperty READ getServerNameProperty WRITE setServerNameProperty)
+    QString getServerNameProperty();
+    void    setServerNameProperty(const QString & name);
+
     Q_PROPERTY(QString serverAddr READ getServerAddr)
     QString getServerAddr() const;
 
@@ -56,8 +60,9 @@ public:
     void setWelcomeMessage(const QString & message);
 
     // Log
-    Q_PROPERTY(QString logFile READ getLogFile)
+    Q_PROPERTY(QString logFile READ getLogFile WRITE setLogFile)
     QString getLogFile();
+    void setLogFile(const QString & logFile);
 
     // Start/stop
     Q_INVOKABLE void start();

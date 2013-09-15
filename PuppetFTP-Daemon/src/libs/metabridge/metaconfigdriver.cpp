@@ -8,7 +8,6 @@
  */
 
 MetaConfigDriver::MetaConfigDriver() {
-    setLastErrorString("HUSS");
 }
 
 MetaConfigDriver::~MetaConfigDriver() {

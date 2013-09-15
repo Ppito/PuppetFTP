@@ -22,6 +22,16 @@ void    ProFtpdConfigHandler::setServerName(const QString & name)
     m_serverName = name;
 }
 
+QString ProFtpdConfigHandler::getServerNameProperty()
+{
+    return m_parser.get(QLatin1String("ServerName")).toString();
+}
+
+void    ProFtpdConfigHandler::setServerNameProperty(const QString & name)
+{
+    m_parser.set(QLatin1String("ServerName"), name);
+}
+
 // Network
 QString ProFtpdConfigHandler::getServerAddr() const
 {
@@ -43,9 +53,9 @@ QString ProFtpdConfigHandler::getInternetProtocol()
     bool isIpv6 = m_parser.get(QLatin1String("UseIPv6")).toString() == QLatin1String("on");
 
     if (isIpv6)
-        return QLatin1String("Ipv6");
+        return QLatin1String("IPv6");
 
-    return QLatin1String("Ipv4");
+    return QLatin1String("IPv4");
 }
 
 void ProFtpdConfigHandler::setInternetProtocol(const QString & ip)
@@ -100,10 +110,7 @@ void ProFtpdConfigHandler::allowAnonymous(bool allow)
 
 bool ProFtpdConfigHandler::isAnonymousUploadAllowed()
 {
-    if (m_parser.get(QString("Anonymous /home/ftp#Limit WRITE#DenyAll")).isValid())
-        return false;
-
-    return true;
+    return !m_parser.get(QString("Anonymous /home/ftp#Limit WRITE#DenyAll")).isValid();
 }
 
 void ProFtpdConfigHandler::allowAnonymousUpload(bool allow)
@@ -119,10 +126,7 @@ void ProFtpdConfigHandler::allowAnonymousUpload(bool allow)
 
 bool ProFtpdConfigHandler::isAnonymousMakeDirAllowed()
 {
-    if (m_parser.get(QString("Anonymous /home/ftp#Limit MKD#DenyAll")).isValid())
-        return false;
-
-    return true;
+    return !m_parser.get(QString("Anonymous /home/ftp#Limit MKD#DenyAll")).isValid();
 }
 
 void ProFtpdConfigHandler::allowAnonymousMakeDir(bool allow)
@@ -151,6 +155,11 @@ void ProFtpdConfigHandler::setWelcomeMessage(const QString & message)
 QString ProFtpdConfigHandler::getLogFile()
 {
     return m_parser.get(QLatin1String("ServerLog")).toString();
+}
+
+void ProFtpdConfigHandler::setLogFile(const QString& logFile)
+{
+    m_parser.set(QLatin1String("ServerLog"), QVariant(logFile));
 }
 
 // Start/stop
