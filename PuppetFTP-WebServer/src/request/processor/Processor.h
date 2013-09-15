@@ -28,5 +28,6 @@
 #include "ServerManageProcessor.h"
 #include "ServerListProcessor.h"
 #include "ServerServiceProcessor.h"
+#include "ServerUserListProcessor.h"
 
 #endif // PROCESSOR_H

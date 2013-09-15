@@ -15,6 +15,7 @@ class ServerManageProcessor: public AbstractRequestProcessor {
 protected:
     int               _id;
     UI::IModelEditor* _form;
+    UI::IModelEditor* _formAnon;
 public:
     ServerManageProcessor();
     virtual ~ServerManageProcessor();

@@ -8,7 +8,6 @@
 #include "RuntimeException.h"
 #include "processor/AbstractRequestProcessor.h"
 #include "ModelWidgetFactory.h"
-#include "ServerConfWrapper.h"
 #include "DatabaseManager.h"
 #include "Widget.h"
 #include "Helper.h"
@@ -18,6 +17,8 @@
 #include "SessionManager.h"
 #include "CommunicationException.h"
 #include "Translate.h"
+#include "DaemonManager.h"
+#include "ServerConfWrapper.h"
 
 ServerManageProcessor::ServerManageProcessor() : AbstractRequestProcessor() {
 }
@@ -42,6 +43,14 @@ void ServerManageProcessor::process(HTTPRequest& request) {
     }
     _form->getForm()->setAction(Helper::gen_url("serverManage", param));
 
+    _formAnon = UI::ModelWidgetFactory::instance()->getEditorWidget("serverAnonConfigurationEditor");
+    if (_formAnon == NULL){
+        s->setNotification("edit", "Model Form Entity 'serverAnonConfiguration' doesn't exists.", UI::Notify::ERROR);
+        request.redirect(Helper::gen_url("serverList", param));
+        return;
+    }
+    _formAnon->getForm()->setAction(Helper::gen_url("serverManage", param));
+
     try {
         Model::Server* server = dynamic_cast<Model::Server*>(DatabaseManager::instance()->getTable("server")->get("id", _id));
         if (server == NULL) {
@@ -50,35 +59,42 @@ void ServerManageProcessor::process(HTTPRequest& request) {
             return;
         }
         // Get a client for the previously added handler...
-        IServerConfigurationProvider* client = CommunicationService::provider()->getServiceClient(server->getCorbaId());
-        if (client == NULL) {
-            addNotify("ClientProvider '" + server->getCorbaId() + "' doesn't exists.", UI::Notify::ERROR);
+        Daemon* daemon = DaemonManager::instance()->getDaemon(server->getDaemonId());
+        if (daemon == NULL) {
+            addNotify("ClientProvider '" + server->getDaemonId() + "' doesn't exists.", UI::Notify::ERROR);
             return;
         }
+        daemon->loadPlugin("server", server->getType());
+        daemon->setParserFilename(server->getConfigPath());
         if (!request.getParameter("submit").isNull()) {
-            //client->setServerName(request.getParameter("server_name").toString());
-            client->setServerPort(request.getParameter("server_port").toUInt());
-            client->setInternetProtocol((IServerConfigurationProvider::INTERNET_PROTOCOL::ip)request.getParameter("internet_protocol").toInt());
-            client->setIdleTimeout(request.getParameter("idle_timeout").toUInt());
-            client->setDataConnectionTimeout(request.getParameter("data_timeout").toUInt());
+
+            if (request.getParameter("type").toString() == "general") {
+                daemon->setServerName(request.getParameter("server_name").toString());
+                daemon->setServerPort(request.getParameter("server_port").toUInt());
+                daemon->setInternetProtocol(request.getParameter("internet_protocol").toString());
+                daemon->setIdleTimeout(request.getParameter("idle_timeout").toUInt());
+                daemon->setDataConnectionTimeout(request.getParameter("data_timeout").toUInt());
+                daemon->setWelcomeMessage(request.getParameter("welcome_message").toString());
+                daemon->setLogFile(request.getParameter("log_file").toString());
+            } else if (request.getParameter("type").toString() == "anonymous") {
+                daemon->enabledAnonymousAllowed(request.getParameter("anonymous_allowed").toBool());
+                daemon->enabledAnonymousUploadAllowed(request.getParameter("anonymous_upload_allowed").toBool());
+                daemon->enabledAnonymousCreateDirAllowed(request.getParameter("anonymouse_create_dir_allowed").toBool());
+            }
             //client->useSystemUser(request.getParameter("use_system_user").toBool());
-            //client->allowAnonymous(request.getParameter("anonymous_allowed").toInt());
-            //client->allowAnonymousUpload(request.getParameter("anonymous_upload_allowed"));
-            //client->allowAnonymousCreateDir(request.getParameter("anonymouse_create_dir_allowed"));
             //client->setVirtualUserAuthentication(request.getParameter("virtual_user_auth"));
-            client->setWelcomeMessage(request.getParameter("welcome_message").toString());
             addNotify("Update success.", UI::Notify::INFO);
         }
-        QObject* object = new UI::ServerConfWrapper(client);
+        QObject* object = new UI::ServerConfWrapper(daemon);
         if (object == NULL) {
-            addNotify("Server configuration '" + server->getCorbaId() + "' cannot be load.", UI::Notify::ERROR);
+            addNotify("Server configuration '" + server->getDaemonId() + "' cannot be load.", UI::Notify::ERROR);
             return;
         }
         _form->bind(object);
-
+        _formAnon->bind(object);
+        daemon->unloadPlugin();
         delete object;
         delete server;
-        delete client;
     } catch (const RuntimeException& e) {
         addNotify("Internal Runtime Error: '" + e.message()+".", UI::Notify::ERROR);
     } catch (const CommunicationException& e) {
@@ -141,6 +157,7 @@ QByteArray ServerManageProcessor::render() const {
     {
         divContent->setId("server");
 
+        Translate::instance()->group("server");
         // Icon
         UI::Container* divIcon = new UI::Container();
         {
@@ -151,6 +168,7 @@ QByteArray ServerManageProcessor::render() const {
         }
         divContent->addWidget(divIcon);
 
+        Translate::instance()->group("server_manage");
         // Menu
         UI::Menu* menu = new UI::Menu(UI::Container::NAV);
         {
@@ -160,8 +178,66 @@ QByteArray ServerManageProcessor::render() const {
         }
         divContent->addWidget(menu);
 
-        // Editing
-        divContent->addWidget(_form->getContent());
+        UI::Container* rightCol = new UI::Container(UI::Container::DIV);
+        {
+            rightCol->addClass("rightCol");
+            UI::Container* tabbable = new UI::Container(UI::Container::DIV);
+            {
+                tabbable->addClass("tabbable");
+                // Tab
+                UI::List* tab = new UI::List();
+                {
+                    tab->addClass("nav nav-tabs");
+                    UI::Link* gen = new UI::Link("#general", new UI::Text("General"));
+                    gen->setAttribute("data-toggle", "tab");
+                    tab->addWidget(gen);
+
+                    UI::Link* anon = new UI::Link("#anonymous", new UI::Text("Anonymous"));
+                    anon->setAttribute("data-toggle", "tab");
+                    tab->addWidget(anon);
+
+//                    UI::Link* extra = new UI::Link("#extra", new UI::Text("Extra"));
+//                    extra->setAttribute("data-toggle", "tab");
+//                    tab->addWidget(extra);
+                }
+                tabbable->addWidget(tab);
+
+                UI::Container* contentTab = new UI::Container(UI::Container::DIV);
+                {
+                    contentTab->addClass("tab-content");
+
+                    // Editing General
+                    UI::Container* generalTab = new UI::Container(UI::Container::DIV);
+                    {
+                        generalTab->setId("general");
+                        generalTab->addClass("tab-pane active");
+                        generalTab->addWidget(_form->getContent());
+                    }
+                    contentTab->addWidget(generalTab);
+
+                    // Editing Anonymous
+                    UI::Container* anonTab = new UI::Container(UI::Container::DIV);
+                    {
+                        anonTab->setId("anonymous");
+                        anonTab->addClass("tab-pane");
+                        anonTab->addWidget(_formAnon->getContent());
+                    }
+                    contentTab->addWidget(anonTab);
+
+                    // Editing Extra
+//                    UI::Container* extraTab = new UI::Container(UI::Container::DIV);
+//                    {
+//                        extraTab->setId("extra");
+//                        extraTab->addClass("tab-pane");
+//                        extraTab->addWidget(_form->getContent());
+//                    }
+//                    contentTab->addWidget(extraTab);
+                }
+                tabbable->addWidget(contentTab);
+            }
+            rightCol->addWidget(tabbable);
+        }
+        divContent->addWidget(rightCol);
 
         // Clear
         UI::Container* divClear = new UI::Container();

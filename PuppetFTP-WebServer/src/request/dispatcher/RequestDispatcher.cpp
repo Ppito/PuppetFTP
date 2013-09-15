@@ -19,7 +19,6 @@
 #include "OutputRendererFactory.h"
 #include "Processor.h"
 
-
 RequestDispatcher* RequestDispatcher::_instance = 0;
 
 RequestDispatcher::RequestDispatcher() {
@@ -61,7 +60,7 @@ bool RequestDispatcher::configure() {
     RequestProcessorFactory::instance()->registerProcessor<ServerManageProcessor>("serverManage");
     RequestProcessorFactory::instance()->registerProcessor<ServerListProcessor>("serverList");
     RequestProcessorFactory::instance()->registerProcessor<ServerServiceProcessor>("serverService");
-    RequestProcessorFactory::instance()->registerProcessor<UnavailableProcessor>("serverUserList");
+    RequestProcessorFactory::instance()->registerProcessor<ServerUserListProcessor>("serverUserList");
     return true;
 }
 
@@ -81,6 +80,7 @@ HTTPResponse RequestDispatcher::dispatch(HTTPRequest& request) {
         }
         session->updateAccess();
         response.setCookie("SESSID", session->toCookieString());
+        request.getContext().setSession(session);
         qDebug() << "Current active session:" << session->getId();
 
         // Get requested route...

@@ -14,12 +14,13 @@
 HTTPRequest::HTTPRequest() {
 }
 
-HTTPRequest::HTTPRequest(const QHostAddress& peer) : _peer(peer), _redirectTo("") {
+HTTPRequest::HTTPRequest(const QHostAddress& peer) : _peer(peer), _reditectTo("") {
 }
 
 HTTPRequest::~HTTPRequest() {
 }
 
+Context&                HTTPRequest::getContext()                             { return _context;                               }
 QHostAddress            HTTPRequest::getPeer()                          const { return _peer;                                  }
 QString                 HTTPRequest::getRawData()                       const { return _rawData;                               }
 QString                 HTTPRequest::getSessionId()                     const { return _cookies["SESSID"];                     }
@@ -89,15 +90,15 @@ void HTTPRequest::parseData(const Routing::Route& route) {
 }
 
 void HTTPRequest::redirect(const QString& uri) {
-    _redirectTo = uri;
+    _reditectTo = uri;
 }
 
 bool HTTPRequest::isRedirected() const {
-    return _redirectTo != "";
+    return _reditectTo != "";
 }
 
 QString HTTPRequest::getRedirection() const {
-    return _redirectTo;
+    return _reditectTo;
 }
 
 QString HTTPRequest::toString() const {

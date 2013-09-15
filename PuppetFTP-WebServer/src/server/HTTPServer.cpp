@@ -48,6 +48,7 @@
 #include "CORBAImpl/Provider.h"
 #include "ServerConfEditor.h"
 #include "ServerConfList.h"
+#include "ServerAnonConfEditor.h"
 #include "Translate.h"
 
 QHostAddress HTTPServer::DEFAULT_HOSTADDR        = QHostAddress::Any;
@@ -121,6 +122,7 @@ void HTTPServer::configure() {
     // Server
     UI::ModelWidgetFactory::instance()->registerWidget<UI::ServerConfEditor>("serverConfigurationEditor");
     UI::ModelWidgetFactory::instance()->registerWidget<UI::ServerConfList>("serverConfigurationList");
+    UI::ModelWidgetFactory::instance()->registerWidget<UI::ServerAnonConfEditor>("serverAnonConfigurationEditor");
 }
 
 void HTTPServer::start() {

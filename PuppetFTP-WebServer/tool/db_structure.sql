@@ -36,9 +36,11 @@ foreign key (PUPPETFTP_ROLE)
 create table SERVER (
 ID                   INTEGER              not null,
 NAME                 VARCHAR(256),
-ADDRESS              VARCHAR(63)          not null,
+ADDRESS              VARCHAR(64)          not null,
 PORT                 INTEGER,
-CORBA_ID	     VARCHAR(100)	  not null,
+DAEMON_ID	     VARCHAR(100)	  not null,
+TYPE		     VARCHAR(64)	  not null,
+CONFIG_PATH	     VARCHAR(1024),
 primary key (ID)
 );
 
@@ -229,4 +231,3 @@ SERVER_CREDENTIAL ASC
 create unique index USER_PK on "USER" (
 ID ASC
 );
-

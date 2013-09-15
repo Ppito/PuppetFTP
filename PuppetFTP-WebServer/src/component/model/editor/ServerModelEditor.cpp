@@ -17,7 +17,19 @@ ServerModelEditor::ServerModelEditor() : ModelEntityEditor< ::Model::Server >() 
     getForm()->getWidget("name")->setLabel(Translate::instance()->tr("name"));
     getForm()->getWidget("address")->setLabel(Translate::instance()->tr("address"));
     getForm()->getWidget("port")->setLabel(Translate::instance()->tr("port"));
-    getForm()->getWidget("corba_id")->setLabel(Translate::instance()->tr("ref_id"));
+    getForm()->getWidget("daemon_id")->setLabel(Translate::instance()->tr("ref_id"));
+    getForm()->getWidget("config_path")->setLabel(Translate::instance()->tr("config_path"));
+    getForm()->removeWidget("type");
+
+    InputChoice* type = new InputChoice("type", InputChoice::SELECT);
+    {
+        type->addOption("Proftpd", "ProFTPd");
+        type->addOption("Vsftpd", "vsFTPd");
+        type->setLabel(Translate::instance()->tr("type"));
+    }
+    getForm()->addWidget("editor", type);
+
+
 }
 
 ServerModelEditor::~ServerModelEditor() {

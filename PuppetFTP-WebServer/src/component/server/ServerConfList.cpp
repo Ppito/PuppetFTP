@@ -8,11 +8,12 @@ ServerConfList::ServerConfList() : ModelEntityList< ::Model::Server >() {
 
     Translate::instance()->group("listing_server");
     // Set column
-    addColumn(Translate::instance()->tr("id"),      "id"       );
-    addColumn(Translate::instance()->tr("name"),    "name"     );
-    addColumn(Translate::instance()->tr("address"), "address"  );
-    addColumn(Translate::instance()->tr("port"),    "port"     );
-    addColumn(Translate::instance()->tr("ref_id"),  "corba_id" );
+    addColumn(Translate::instance()->tr("id"),      "id"        );
+    addColumn(Translate::instance()->tr("name"),    "name"      );
+    addColumn(Translate::instance()->tr("address"), "address"   );
+    addColumn(Translate::instance()->tr("port"),    "port"      );
+    addColumn(Translate::instance()->tr("ref_id"),  "daemon_id" );
+    addColumn(Translate::instance()->tr("type"),    "type"      );
 
     Translate::instance()->group("listing");
     // Set action

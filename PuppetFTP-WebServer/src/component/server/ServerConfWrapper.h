@@ -9,7 +9,8 @@
 #define SERVERCONFWRAPPER_H_
 
 #include <QObject>
-#include "IServerConfigurationProvider.h"
+#include <QStringList>
+#include "Daemon.h"
 
 namespace UI {
 
@@ -25,50 +26,65 @@ namespace UI {
  */
 class ServerConfWrapper: public QObject {
     Q_OBJECT
-    Q_PROPERTY(QString                                                         server_name                    READ getServerName                  )
-    Q_PROPERTY(QString                                                         server_addr                    READ getServerAddr                  )
-    Q_PROPERTY(quint16                                                         server_port                    READ getServerPort                  )
-    Q_PROPERTY(IServerConfigurationProvider::INTERNET_PROTOCOL::ip             internet_protocol              READ getInternetProtocol            )
-    Q_PROPERTY(quint16                                                         idle_timeout                   READ getIdleTimeout                 )
-    Q_PROPERTY(quint16                                                         data_timeout                   READ getDataConnectionTimeout       )
-    Q_PROPERTY(bool                                                            use_system_user                READ isUsingSystemUser              )
-    Q_PROPERTY(bool                                                            anonymous_allowed              READ isAnonymousAllowed             )
-    Q_PROPERTY(bool                                                            anonymous_upload_allowed       READ isAnonymousUploadAllowed       )
-    Q_PROPERTY(bool                                                            anonymouse_create_dir_allowed  READ isAnonymousCreateDirAllowed    )
-    Q_PROPERTY(IServerConfigurationProvider::VIRTUAL_USER_AUTHENTICATION::auth virtual_user_auth              READ getVirtualUserAuthentication   )
-    Q_PROPERTY(QStringList                                                     virtual_users                  READ virtualUsers                   )
-    Q_PROPERTY(QString                                                         welcome_message                READ getWelcomeMessage              )
-    Q_PROPERTY(QString                                                         log_file                       READ getLogFile                     )
-
-    Q_ENUMS(IServerConfigurationProvider::INTERNET_PROTOCOL::ip)
-    Q_ENUMS(IServerConfigurationProvider::VIRTUAL_USER_AUTHENTICATION::auth)
+    Q_PROPERTY(QString                                                         server_name                    READ getServerName                WRITE setServerName                     )
+    Q_PROPERTY(QString                                                         server_addr                    READ getServerAddr                WRITE setServerAddr                     )
+    Q_PROPERTY(quint16                                                         server_port                    READ getServerPort                WRITE setServerPort                     )
+    Q_PROPERTY(QString                                                         internet_protocol              READ getInternetProtocol          WRITE setInternetProtocol               )
+    Q_PROPERTY(quint16                                                         idle_timeout                   READ getIdleTimeout               WRITE setIdleTimeout                    )
+    Q_PROPERTY(quint16                                                         data_timeout                   READ getDataConnectionTimeout     WRITE setDataConnectionTimeout          )
+    Q_PROPERTY(QString                                                         welcome_message                READ getWelcomeMessage            WRITE setWelcomeMessage                 )
+    Q_PROPERTY(QString                                                         log_file                       READ getLogFile                   WRITE setLogFile                        )
+    Q_PROPERTY(bool                                                            anonymous_allowed              READ isAnonymousAllowed           WRITE enabledAnonymousAllowed           )
+    Q_PROPERTY(bool                                                            anonymous_upload_allowed       READ isAnonymousUploadAllowed     WRITE enabledAnonymousUploadAllowed     )
+    Q_PROPERTY(bool                                                            anonymouse_create_dir_allowed  READ isAnonymousCreateDirAllowed  WRITE enabledAnonymousCreateDirAllowed  )
+    Q_PROPERTY(quint16                                                         virtual_user_auth              READ getVirtualUserAuthentication WRITE setVirtualUserAuthentication      )
+//    Q_PROPERTY(QStringList                                                     virtual_users                  READ virtualUsers                 WRITE setVirtualUsers                   )
 
 private:
     ServerConfWrapper();
-    IServerConfigurationProvider* _provider;
+    Daemon* _daemon;
 
 public:
-    ServerConfWrapper(IServerConfigurationProvider* provider);
+    ServerConfWrapper(Daemon* daemon);
     virtual ~ServerConfWrapper();
 
-    // Network
-    QString                                                         getServerName()                 const;
-    QString                                                         getServerAddr()                 const;
-    quint16                                                         getServerPort()                 const;
-    IServerConfigurationProvider::INTERNET_PROTOCOL::ip             getInternetProtocol()           const;
-    quint16                                                         getIdleTimeout()                const;
-    quint16                                                         getDataConnectionTimeout()      const;
-    // User
-    bool                                                            isUsingSystemUser()             const;
-    bool                                                            isAnonymousAllowed()            const;
-    bool                                                            isAnonymousUploadAllowed()      const;
-    bool                                                            isAnonymousCreateDirAllowed()   const;
-    IServerConfigurationProvider::VIRTUAL_USER_AUTHENTICATION::auth getVirtualUserAuthentication()  const;
-    QStringList                                                     virtualUsers()                  const;
+    /*** GETTER ***/
     // Misc
-    QString                                                         getWelcomeMessage()             const;
-    // Log
-    QString                                                         getLogFile()                    const;
+    QString         getServerName()                 const;
+    QString         getServerAddr()                 const;
+    quint16         getServerPort()                 const;
+    QString         getInternetProtocol()           const;
+    quint16         getIdleTimeout()                const;
+    quint16         getDataConnectionTimeout()      const;
+    QString         getWelcomeMessage()             const;
+    QString         getLogFile()                    const;
+    // Anonymous
+    bool            isAnonymousAllowed()            const;
+    bool            isAnonymousUploadAllowed()      const;
+    bool            isAnonymousCreateDirAllowed()   const;
+    // User
+    quint16         getVirtualUserAuthentication()  const;
+    //QStringList   virtualUsers()                  const;
+
+    /*** SETTER ***/
+    // Misc
+    void            setServerName(const QString& name);
+    void            setServerPort(const quint16& port);
+    void            setServerAddr(const QString& addr);
+    void            setInternetProtocol(const QString& internetProtocol);
+    void            setIdleTimeout(const quint16& idleTimeout);
+    void            setDataConnectionTimeout(const quint16& dataConnectionTimeout);
+    void            setWelcomeMessage(const QString& welcomeMessage);
+    void            setLogFile(const QString& logName);
+    // Anonymous
+    void            enabledAnonymousAllowed(const bool& enabled);
+    void            enabledAnonymousUploadAllowed(const bool& enabled);
+    void            enabledAnonymousCreateDirAllowed(const bool& enabled);
+    // User
+    void            setVirtualUserAuthentication(const quint16& user);
+//    void            setVirtualUsers(const QString& user);
+
+
 };
 
 } // namespace UI

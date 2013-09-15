@@ -26,6 +26,7 @@ ServerConfEditor::ServerConfEditor() : ModelEntityEditor< ::UI::ServerConfWrappe
         Translate::instance()->group("server_editor_help");
         (*it)->setHelp(Translate::instance()->tr((*it)->getName()));
     }
+    getForm()->getWidget("type")->setLabel("");
 }
 
 ServerConfEditor::~ServerConfEditor() {
@@ -37,11 +38,10 @@ void ServerConfEditor::initCustomField() {
 
     InputChoice* selectProtocol = new InputChoice("internet_protocol", InputChoice::SELECT);
     {
-        selectProtocol->addOption("0", "IPv4");
-        selectProtocol->addOption("1", "IPv6");
+        selectProtocol->addOption("IPv4", "IPv4");
+        selectProtocol->addOption("IPv6", "IPv6");
     }
     getForm()->addWidget("editor", selectProtocol);
-    setFormat("internet_protocol", &Helper::formatEnumProtocol);
 
     InputChoice* selectVirtual = new InputChoice("virtual_user_auth", InputChoice::SELECT);
     {
@@ -49,33 +49,29 @@ void ServerConfEditor::initCustomField() {
     }
     getForm()->addWidget("editor", selectVirtual);
 
-    getForm()->getWidget("log_file")->setAttribute("disabled", "disabled");
+    Input* hidden = new Input("type", Input::HIDDEN);
+    {
+        hidden->setValue("general");
+        hidden->setLabel("");
+    }
+    getForm()->addWidget("editor", hidden);
 
     // Set attribute
     getContent()->removeAttribute("class");
-    getContent()->addClass("rightCol");
 }
 
 void ServerConfEditor::initOrder() {
 
     getForm()->removeAllSections();
     getForm()->addSection("network",    "Network Management");
-//    getForm()->addSection("user",       "User Management");
-//    getForm()->addSection("anonymous",  "Anonymous User");
     getForm()->addSection("miscs",      "Miscs");
     getForm()->addSection("submit",     "");
 
     QList<QString> order;
     order << "server_name" << "server_port" << "internet_protocol" << "idle_timeout" << "data_timeout";
     getForm()->setFieldOrder("network", order);
-//    order.clear();
-//    order << "use_system_user" << "virtual_user_auth" << "virtual_users";
-//    getForm()->setFieldOrder("user", order);
-//    order.clear();
-//    order << "anonymous_allowed" << "anonymous_upload_allowed" << "anonymouse_create_dir_allowed";
-//    getForm()->setFieldOrder("anonymous", order);
     order.clear();
-    order << "welcome_message" << "log_file";
+    order << "welcome_message" << "log_file" << "type";
     getForm()->setFieldOrder("miscs", order);
 }
 

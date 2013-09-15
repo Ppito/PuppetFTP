@@ -12,6 +12,7 @@
 #include "CommunicationService.h"
 #include "RuntimeException.h"
 #include "Translate.h"
+#include "DaemonManager.h"
 
 ServerServiceProcessor::ServerServiceProcessor() : AbstractRequestProcessor() {
 }
@@ -37,23 +38,26 @@ void ServerServiceProcessor::process(HTTPRequest& request) {
                 message = "ServerConfiguration id " + QString::number(_id) + " doesn't exists.";
             } else {
                 // Get a client for the previously added handler...
-                IServerConfigurationProvider* client = CommunicationService::provider()->getServiceClient(server->getCorbaId());
-                if (client == NULL) {
-                    message = "ClientProvider '" + server->getCorbaId() + "' doesn't exists.";
+                Daemon* daemon = DaemonManager::instance()->getDaemon(server->getDaemonId());
+                if (daemon == NULL) {
+                    message = "ClientProvider '" + server->getDaemonId() + "' doesn't exists.";
                 } else {
+                    daemon->loadPlugin("server", server->getType());
+                    daemon->setParserFilename(server->getConfigPath());
 
-                    if (_name == "start") {
-                        client->start();
-                    } else if (_name == "stop") {
-                        client->stop();
-                    } else if (_name == "restart") {
-                        client->restart();
+                    if (daemon->isCommandAvailabled(_name)) {
+                        daemon->exec(_name);
                     } else {
                         throw new RuntimeException("Service '"+_name+"' unknown.");
                     }
-                    err     = false;
-                    message = "Server " + server->getName() + ": "+ _name;
-                    delete client;
+                    QString lastError = daemon->getLastError();
+                    if (!lastError.isEmpty()) {
+                        message = "Server " + server->getName() + " : " + lastError;
+                    } else {
+                        err     = false;
+                        message = "Server " + server->getName() + ": "+ _name;
+                    }
+                    daemon->unloadPlugin();
                 }
                 delete server;
             }

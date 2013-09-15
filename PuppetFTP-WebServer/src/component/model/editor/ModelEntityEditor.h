@@ -41,14 +41,7 @@ public:
                     boolean->setLabel(field.name());
                     _form->addWidget("editor", boolean);
                 } else if (field.type() == QVariant::UserType) {
-//                    QMetaEnum test = field.enumerator();
-//                    qDebug() << "Is Enummmm: " <<  test.name();
-
                     InputChoice* select = new InputChoice(field.name(), InputChoice::SELECT);
-
-//                    select->addOption("0", "false");
-//                    select->addOption("1", "true");
-//                    select->setLabel(field.name());
                     _form->addWidget("editor", select);
                 } else {
                     Input* input = new Input(field.name());
@@ -87,7 +80,18 @@ public:
                         if (_format.contains(field.name())) {
                             v = _format[field.name()](v);
                         }
-                        widget->setValue(v);
+
+                        QString val = v.toString();
+                        if (QRegExp("^\".*\"$").exactMatch(val)) {
+                            val = val.mid(1, val.length() -2);
+                        }
+                        val.replace("&", "&amp;");
+                        val.replace("'", "&#039;");
+                        val.replace("\"", "&quot;");
+                        val.replace("<", "&lt;");
+                        val.replace(">", "&gt;");
+                        widget->setValue(val);
+                        qDebug() << field.name() << " - " << val;
                     }
                 }
             }

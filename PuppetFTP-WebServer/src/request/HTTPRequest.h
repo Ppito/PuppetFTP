@@ -15,19 +15,21 @@
 #include <QVariant>
 #include <QHttpRequestHeader>
 #include "Route.h"
+#include "Context.h"
 
 /********************************************************************************
  * Simple class used to manage HTTP request.
  */
 class HTTPRequest {
 protected:
+    Context                 _context;
     QHostAddress            _peer;
     QHttpRequestHeader      _header;
     QMap<QString, QString>  _cookies;
     QString                 _rawData;
     QMap<QString, QVariant> _parameters;
 
-    QString                 _redirectTo;
+    QString                 _reditectTo;
 
     HTTPRequest();
 
@@ -35,6 +37,7 @@ public:
     HTTPRequest(const QHostAddress& peer);
     virtual ~HTTPRequest();
 
+    Context&                getContext();
     QHostAddress            getPeer()                                                 const;
     QString                 getRawData()                                              const;
     QString                 getSessionId()                                            const;
