@@ -21,7 +21,7 @@ class AbstractWidgetForm : public IWidgetForm {
 protected:
     QString                _name; // id will be equal to name, must be unique
     IWidget*               _label;
-    Information*           _help;
+    IWidget*               _help;
     QVariant               _value;
     QMap<QString, QString> _attributes;
 
@@ -38,7 +38,7 @@ public:
     virtual QString     getClasses()                      const;
 
     virtual void       setName(const QString& name);
-    virtual void       setLabel(const QString& label);
+    virtual void       setLabel(const QString& label, const QString& help = "");
     virtual void       setHelp(const QString& help);
     virtual void       setValue(const QVariant& value);
     virtual void       setAttribute(const QString& name, const QString& value);

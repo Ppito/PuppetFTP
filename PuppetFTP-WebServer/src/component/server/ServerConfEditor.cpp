@@ -17,14 +17,16 @@ ServerConfEditor::ServerConfEditor() : ModelEntityEditor< ::UI::ServerConfWrappe
 
     // Change order
     initOrder();
-
+    QString label;
+    QString help;
     QList<IWidgetForm*> widget = getForm()->getWidgets();
 
     for (QList<IWidgetForm*>::iterator it = widget.begin(); it != widget.end(); it++) {
         Translate::instance()->group("server_editor_label");
-        (*it)->setLabel(Translate::instance()->tr((*it)->getName()));
+        label = Translate::instance()->tr((*it)->getName());
         Translate::instance()->group("server_editor_help");
-        (*it)->setHelp(Translate::instance()->tr((*it)->getName()));
+        help = Translate::instance()->tr((*it)->getName());
+        (*it)->setLabel(label, help);
     }
     getForm()->getWidget("type")->setLabel("");
 }

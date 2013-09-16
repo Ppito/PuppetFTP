@@ -32,10 +32,14 @@ QString     AbstractWidgetForm::getId()                           const         
 QString     AbstractWidgetForm::getClasses()                      const                 { return getAttribute("class");     }
 
 void        AbstractWidgetForm::setName(const QString& name)                            { _name  = name;                    }
-void        AbstractWidgetForm::setLabel(const QString& label)                          { _label = new Text(label);         }
+void        AbstractWidgetForm::setLabel(const QString& label, const QString& help) {
+    _label = new Text(label);
+    if (!help.isEmpty())
+        _label->setAttribute("title", help);
+}
 
 void        AbstractWidgetForm::setHelp(const QString& help) {
-    //_help  = new Image("/img/icon_question.png", help);
+//    _help = new Image("/img/icon_question.png", help);
 }
 
 void        AbstractWidgetForm::setValue(const QVariant& value)                         { _value = value;                   }
