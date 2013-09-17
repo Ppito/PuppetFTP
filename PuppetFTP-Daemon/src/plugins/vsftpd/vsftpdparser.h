@@ -11,8 +11,6 @@
 # define DEFAULT_CONFIG_VSFTP_FILE "/etc/vsftpd/vsftpd.conf"
 # define DEFAULT_BIN_PATH_VSFTP "/usr/bin/service"
 
-#define CACHE_TIME 30000
-
 class VsftpdParser : public LastError
 {
 public:

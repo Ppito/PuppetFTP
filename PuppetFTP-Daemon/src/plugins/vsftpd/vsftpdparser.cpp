@@ -6,6 +6,7 @@
 VsftpdParser::VsftpdParser(const QString & filePath)
 {
     setFileName(QDir::toNativeSeparators(filePath));
+    m_dryRun = false;
 }
 
 void VsftpdParser::refresh()
@@ -25,14 +26,12 @@ void VsftpdParser::refresh()
     }
 
     m_cache.clear();
-    QStringList options = m_data.split(QChar::LineSeparator, QString::SkipEmptyParts);
+    QStringList options = m_data.split(QString("\n"), QString::SkipEmptyParts);
     foreach(const QString & option, options) {
         const QStringList & element = option.split(QLatin1Char('='));
         if (element.size() >= 2)
             m_cache.insert(element.at(0), QVariant(element.at(1)));
     }
-
-    m_cacheTimer.start();
 }
 
 void VsftpdParser::flush()
@@ -58,8 +57,8 @@ void VsftpdParser::set(const QString & key, const QVariant & value)
         if (m_cache.contains(key)) {
             m_data.replace(QRegExp(QString("(^#?%1=[^\n]+\n)|(#?%1=[^\n]+\n)").arg(key)), QString("%1=%2\n").arg(key, value.toString()));
         } else {
-            if (!m_data.endsWith(QChar::LineSeparator))
-                m_data.append(QChar::LineSeparator);
+            if (!m_data.endsWith(QString("\n")))
+                m_data.append(QString("\n"));
 
             m_data.append(QString(QLatin1String("%1=%2\n")).arg(key, value.toString()));
         }
