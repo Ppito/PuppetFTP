@@ -102,40 +102,40 @@ void ProFtpdConfigHandler::allowAnonymous(bool allow)
         m_parser.set(QString("Anonymous /home/ftp#Group"), QString("ftp"));
         m_parser.set(QString("Anonymous /home/ftp#UserAlias"), QString("anonymous ftp"));
     } else {
-        m_parser.set(QString("Anonymous /home/ftp#User"), QString("ftp"), true);
-        m_parser.set(QString("Anonymous /home/ftp#Group"), QString("ftp"), true);
-        m_parser.set(QString("Anonymous /home/ftp#UserAlias"), QString("anonymous ftp"), true);
+        m_parser.set(QString("Anonymous /home/ftp#User"), QString("ftp"), ProftpdParser::DeleteValue);
+        m_parser.set(QString("Anonymous /home/ftp#Group"), QString("ftp"), ProftpdParser::DeleteValue);
+        m_parser.set(QString("Anonymous /home/ftp#UserAlias"), QString("anonymous ftp"), ProftpdParser::DeleteValue);
     }
 }
 
 bool ProFtpdConfigHandler::isAnonymousUploadAllowed()
 {
-    return !m_parser.get(QString("Anonymous /home/ftp#Limit WRITE#DenyAll")).isValid();
+    return m_parser.get(QString("Anonymous /home/ftp#Limit WRITE#AllowAll")).isValid();
 }
 
 void ProFtpdConfigHandler::allowAnonymousUpload(bool allow)
 {
     if (allow) {
-        m_parser.set(QString("Anonymous /home/ftp#Limit WRITE"), QVariant(), true);
+        m_parser.set(QString("Anonymous /home/ftp#Limit WRITE"), QString(), ProftpdParser::DeleteNode);
         m_parser.set(QString("Anonymous /home/ftp#Limit WRITE#AllowAll"));
     } else {
-        m_parser.set(QString("Anonymous /home/ftp#Limit WRITE"), QVariant(), true);
+        m_parser.set(QString("Anonymous /home/ftp#Limit WRITE"), QString(), ProftpdParser::DeleteNode);
         m_parser.set(QString("Anonymous /home/ftp#Limit WRITE#DenyAll"));
     }
 }
 
 bool ProFtpdConfigHandler::isAnonymousMakeDirAllowed()
 {
-    return !m_parser.get(QString("Anonymous /home/ftp#Limit MKD#DenyAll")).isValid();
+    return m_parser.get(QString("Anonymous /home/ftp#Limit MKD#AllowAll")).isValid();
 }
 
 void ProFtpdConfigHandler::allowAnonymousMakeDir(bool allow)
 {
     if (allow) {
-        m_parser.set(QString("Anonymous /home/ftp#Limit MKD"), QVariant(), true);
+        m_parser.set(QString("Anonymous /home/ftp#Limit MKD"), QString(), ProftpdParser::DeleteNode);
         m_parser.set(QString("Anonymous /home/ftp#Limit MKD#AllowAll"));
     } else {
-        m_parser.set(QString("Anonymous /home/ftp#Limit MKD"), QVariant(), true);
+        m_parser.set(QString("Anonymous /home/ftp#Limit MKD"), QString(), ProftpdParser::DeleteNode);
         m_parser.set(QString("Anonymous /home/ftp#Limit MKD#DenyAll"));
     }
 }

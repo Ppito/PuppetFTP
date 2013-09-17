@@ -34,9 +34,16 @@ private:
 class ProftpdParser : public LastError
 {
 public:
+    enum InsertType {
+        Add,
+        DeleteNode,
+        DeleteValue
+    };
+
+public:
     ProftpdParser(const QString & filePath = DEFAULT_CONFIG_PROFTPD_FILE);
 
-    void set(const QString & key, const QVariant & value = QVariant(), bool toDelete = false);
+    void set(const QString & key, const QVariant & value = QVariant(), ProftpdParser::InsertType type = ProftpdParser::Add);
     QVariant get(const QString & key);
 
     QString fileName() const;
@@ -50,7 +57,7 @@ public:
 
 private:
     ProftpdConfNode parse(const QString & data);
-    void insert(QString & data, const QString & key, const QString & value, bool toDelete);
+    void insert(QString & data, const QString & key, const QString & value, ProftpdParser::InsertType type = ProftpdParser::Add);
 
     void refresh();
     void flush();

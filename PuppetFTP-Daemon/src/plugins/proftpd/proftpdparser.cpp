@@ -128,11 +128,23 @@ ProftpdConfNode ProftpdParser::parse(const QString & data)
     return node;
 }
 
-void ProftpdParser::insert(QString & data, const QString & key, const QString & value, bool toDelete)
+void ProftpdParser::insert(QString & data, const QString & key, const QString & value, ProftpdParser::InsertType type)
 {
     QStringList subkeys = key.split(QLatin1Char('#'));
     const QString & currentKey = subkeys.first();
     bool iscurrentKeyNode = (subkeys.count() > 1);
+
+    QString currentKeyfirst = currentKey;
+    QString currentKeylast;
+    QStringList currentKeyList = currentKey.split(QString(" "));
+
+    if (!currentKeyList.isEmpty()) {
+        currentKeyfirst = currentKeyList.first();
+        if (currentKeyList.size() > 1) {
+            currentKeyList.removeFirst();
+            currentKeylast = currentKeyList.join(QString(" "));
+        }
+    }
 
     QRegExp beginNode(BEGIN_NODE_REGEXP);
     QRegExp datamatch(DATA_NODE_REGEXP);
@@ -140,10 +152,10 @@ void ProftpdParser::insert(QString & data, const QString & key, const QString & 
     int childpos = 0;
     int datapos = 0;
     while ((childpos = beginNode.indexIn(data, childpos)) != -1) {
-        if (!iscurrentKeyNode) {
+        if (!iscurrentKeyNode && type != ProftpdParser::DeleteNode) {
             while ((datapos = datamatch.indexIn(data, datapos)) != -1 && datapos < childpos) {
                 if (datamatch.cap(1) == currentKey) {
-                    if (toDelete) {
+                    if (type == ProftpdParser::DeleteValue) {
                         data.replace(datapos, datamatch.matchedLength(), QString("\n"));
                         return;
                     }
@@ -154,7 +166,7 @@ void ProftpdParser::insert(QString & data, const QString & key, const QString & 
                 }
 
                 if (datamatch.cap(3) == currentKey) {
-                    if (toDelete) {
+                    if (type == ProftpdParser::DeleteValue) {
                         data.replace(datapos, datamatch.matchedLength(), QString());
                         return;
                     }
@@ -180,24 +192,30 @@ void ProftpdParser::insert(QString & data, const QString & key, const QString & 
         childpos += endNode.matchedLength();
         datapos = childpos;
 
-        if ((currentKey.split(QString(" ")).first() == beginNode.cap(1) ||
-             currentKey.split(QString(" ")).first() == beginNode.cap(3)) &&
-            !subkeys.isEmpty()) {
-            subkeys.removeFirst();
-            QString inner = data.mid(beginData).left(endData - beginData);
-            insert(inner, subkeys.join(QString("#")), value, toDelete);
-            data.replace(beginData, endData - beginData, inner);
-            return;
+        if ((!currentKeylast.isEmpty() && currentKeyfirst == beginNode.cap(1) && currentKeylast == beginNode.cap(2)) ||
+             (currentKeyfirst == beginNode.cap(3))) {
+            if (!iscurrentKeyNode && type == ProftpdParser::DeleteNode) {
+                data.replace(beginData, endData - beginData, QString("\n"));
+                return;
+            }
+
+            if (!subkeys.isEmpty()) {
+                subkeys.removeFirst();
+                QString inner = data.mid(beginData).left(endData - beginData);
+                insert(inner, subkeys.join(QString("#")), value, type);
+                data.replace(beginData, endData - beginData, inner);
+                return;
+            }
         }
     }
 
     if (iscurrentKeyNode) {
         data.prepend(QString("\n<%1>\n</%2>\n").arg(currentKey, currentKey.split(QString(" ")).first()));
-        insert(data, subkeys.join(QString("#")), value, toDelete);
+        insert(data, subkeys.join(QString("#")), value, type);
     } else {
         while ((datapos = datamatch.indexIn(data, datapos)) != -1) {
             if (datamatch.cap(1) == currentKey) {
-                if (toDelete) {
+                if (type == ProftpdParser::DeleteValue) {
                     data.replace(datapos, datamatch.matchedLength(), QString("\n"));
                     return;
                 }
@@ -208,7 +226,7 @@ void ProftpdParser::insert(QString & data, const QString & key, const QString & 
             }
 
             if (datamatch.cap(3) == currentKey) {
-                if (toDelete) {
+                if (type == ProftpdParser::DeleteValue) {
                     data.replace(datapos, datamatch.matchedLength(), QString());
                     return;
                 }
@@ -221,7 +239,7 @@ void ProftpdParser::insert(QString & data, const QString & key, const QString & 
             datapos += datamatch.matchedLength() - 1;
         }
 
-        if (toDelete)
+        if (type != ProftpdParser::Add)
             return;
 
         if (value.isEmpty())
@@ -269,14 +287,12 @@ void ProftpdParser::flush()
     }
 }
 
-void ProftpdParser::set(const QString & key, const QVariant & value, bool toDelete)
+void ProftpdParser::set(const QString & key, const QVariant & value, ProftpdParser::InsertType type)
 {
     if (!isDryRun())
         refresh();
 
-    qDebug() << "key "<< key << "value" << value;
-
-    insert(m_data, key, value.toString(), toDelete);
+    insert(m_data, key, value.toString(), type);
 
     // TODO: improve to update cache and not reload like this
     m_cache.clear();
@@ -293,6 +309,7 @@ QVariant ProftpdParser::get(const QString & key)
 
     ProftpdConfNode node = m_cache;
     QStringList keyList = key.split(QLatin1Char('#'));
+
     foreach (const QString subkey, keyList) {
         if (subkey != keyList.last()) {
             node = node.childreen().value(subkey, ProftpdConfNode());
