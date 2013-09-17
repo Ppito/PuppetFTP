@@ -1,16 +1,8 @@
-#include <QtPlugin>
-#include <QSettings>
-#include <QDir>
-#include <QProcess>
-
 #include "vsftpdconfig.h"
+#include "servicemanager.h"
 
 VsftpdConfigHandler::VsftpdConfigHandler(const QString & serverName, const QString & serverAddr, const QString & fileName, const QString & serverBinPath)
     : m_parser(fileName), m_serverName(serverName), m_serverAddr(serverAddr), m_serverPath(serverBinPath), m_serviceName("vsftpd")
-{
-}
-
-VsftpdConfigHandler::~VsftpdConfigHandler()
 {
 }
 

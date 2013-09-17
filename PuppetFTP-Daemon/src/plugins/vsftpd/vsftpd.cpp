@@ -8,10 +8,6 @@ Vsftpd::Vsftpd()
     initialize(*(ServerConfig::getInstance()));
 }
 
-Vsftpd::~Vsftpd()
-{
-}
-
 void Vsftpd::initialize(ServerConfig & config)
 {
     m_serverName = config.get(ServerConfig::serverNameName);

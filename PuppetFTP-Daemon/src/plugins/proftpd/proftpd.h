@@ -11,7 +11,6 @@ class Proftpd : public MetaPlugin
 
 public:
     Proftpd();
-    ~Proftpd();
 
     // Plugin default config loading from file deprecated soon !
     void initialize(ServerConfig & config);
@@ -24,7 +23,6 @@ private:
     QString         m_binPath;
     QString         m_serverName;
     QString         m_serverAddr;
-
 };
 
 #endif // PROFTPD_H

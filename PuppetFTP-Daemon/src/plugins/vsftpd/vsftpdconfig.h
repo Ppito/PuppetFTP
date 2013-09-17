@@ -1,17 +1,16 @@
 #ifndef VSFTPCONFIG_H
 # define VSFTPCONFIG_H
 
-#include "abstractauthentication.h"
-#include "vsftpdparser.h"
-#include "servicemanager.h"
 #include "metaconfig.h"
 #include "lasterror.h"
+#include "vsftpdparser.h"
 
 class VsftpdConfigHandler : public MetaConfig, public LastError
 {
+    Q_OBJECT
+
 public:
     VsftpdConfigHandler(const QString & serverName, const QString & serverAddr, const QString & fileName = DEFAULT_CONFIG_VSFTP_FILE, const QString & serverBinPath = DEFAULT_BIN_PATH_VSFTP);
-    ~VsftpdConfigHandler();
 
     // Network
     Q_PROPERTY(QString serverName READ getServerName WRITE setServerName)
@@ -80,8 +79,9 @@ public:
     void setWelcomeMessage(const QString & message);
 
     // Log
-    Q_PROPERTY(QString logFile READ getLogFile)
+    Q_PROPERTY(QString logFile READ getLogFile WRITE setLogFile)
     QString getLogFile();
+    void setLogFile(const QString & logFile);
 
     // Start/stop
     Q_INVOKABLE void start();
@@ -106,7 +106,6 @@ public:
 
     // LastError
     Q_PROPERTY(QString lastError READ lastError)
-    QString lastError();
 
 private:
     VsftpdParser m_parser;

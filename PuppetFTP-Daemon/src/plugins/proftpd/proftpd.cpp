@@ -8,10 +8,6 @@ Proftpd::Proftpd()
     initialize(*(ServerConfig::getInstance()));
 }
 
-Proftpd::~Proftpd()
-{
-}
-
 void Proftpd::initialize(ServerConfig & config)
 {
     m_serverName = config.get(ServerConfig::serverNameName);

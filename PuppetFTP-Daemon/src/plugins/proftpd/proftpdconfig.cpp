@@ -6,12 +6,6 @@ ProFtpdConfigHandler::ProFtpdConfigHandler(const QString & serverName, const QSt
 {
 }
 
-ProFtpdConfigHandler::~ProFtpdConfigHandler()
-{
-}
-
-/********************************************************************************/
-
 QString ProFtpdConfigHandler::getServerName() const
 {
     return m_serverName;

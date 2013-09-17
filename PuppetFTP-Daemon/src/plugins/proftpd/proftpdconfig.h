@@ -11,7 +11,6 @@ class ProFtpdConfigHandler : public MetaConfig, public LastError
 
 public:
     ProFtpdConfigHandler(const QString & serverName, const QString & serverAddr, const QString & fileName = DEFAULT_CONFIG_PROFTPD_FILE, const QString & serverBinPath = DEFAULT_BIN_PATH_PROFTPD);
-    ~ProFtpdConfigHandler();
 
     // Network
     Q_PROPERTY(QString serverName READ getServerName WRITE setServerName)
