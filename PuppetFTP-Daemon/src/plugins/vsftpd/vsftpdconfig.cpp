@@ -191,6 +191,11 @@ QString VsftpdConfigHandler::getLogFile()
     return m_parser.get(QLatin1String("xferlog_file")).toString();
 }
 
+void VsftpdConfigHandler::setLogFile(const QString & logFile)
+{
+    m_parser.set(QLatin1String("xferlog_file"), logFile);
+}
+
 // Start/stop
 void VsftpdConfigHandler::start()
 {
