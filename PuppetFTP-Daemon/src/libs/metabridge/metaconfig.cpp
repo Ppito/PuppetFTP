@@ -95,22 +95,15 @@ ArgumentList qVariantListToGenericArguments(const QVariantList & argumentList, Q
 QVariant MetaConfig::exec(const QString & taskName, const QVariantList & argumentList)
 {
     const QMetaObject * metaObject = this->metaObject();
-    const char * taskStr = taskName.toUtf8().constData();
-
+    QByteArray taskByteArray = taskName.toUtf8();
+    const char * taskStr = taskByteArray.constData();
     int index = metaObject->indexOfMethod(taskStr);
-qDebug() << "1";
-qDebug() << taskStr;
-qDebug() << metaObject->methodCount();
     if (index != -1) {
-qDebug() << "2";
         QMetaMethod metaMethod = metaObject->method(index);
-qDebug() << "3";
         if (metaMethod.access() == QMetaMethod::Public && metaMethod.methodType() == QMetaMethod::Method) {
-qDebug() << "4";
             QVariant returnValue = QVariant(QVariant::nameToType(metaMethod.typeName()));
             QGenericReturnArgument genericResult(metaMethod.typeName(), returnValue.data());
             ArgumentList genericArguments = qVariantListToGenericArguments(argumentList, metaMethod.parameterTypes());
-qDebug() << "5";
             if (metaMethod.invoke(this,
                                   Qt::DirectConnection,
                                   genericResult,
@@ -124,12 +117,11 @@ qDebug() << "5";
                                   genericArguments.at(7),
                                   genericArguments.at(8),
                                   genericArguments.at(9))) {
-qDebug() << "6";
                 return returnValue;
             }
         }
     }
-qDebug() << "7";
+
     return QVariant();
 }
 

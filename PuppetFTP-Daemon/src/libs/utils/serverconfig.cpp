@@ -12,7 +12,7 @@ QString ServerConfig::serverAddrName = "server_addr";
 ServerConfig    *ServerConfig::m_instance = NULL;
 
 ServerConfig::ServerConfig()
-    : m_filePath(QDir::toNativeSeparators(QCoreApplication::applicationDirPath().append("/config.ini")))
+    : m_filePath(QDir::toNativeSeparators(QCoreApplication::applicationDirPath().append("/config.ini"))), m_settings(0)
 {
     load();
 }
@@ -54,6 +54,7 @@ void        ServerConfig::load()
 {
     if (m_settings != NULL)
         delete m_settings;
+
     m_settings = new QSettings(m_filePath, QSettings::IniFormat);
 }
 
