@@ -11,9 +11,6 @@ VsftpdParser::VsftpdParser(const QString & filePath)
 
 void VsftpdParser::refresh()
 {
-    if (!m_cacheTimer.hasExpired(CACHE_TIME))
-        return;
-
     if (m_data.isEmpty()) {
         QFile file(m_filename);
 
